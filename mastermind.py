@@ -117,14 +117,14 @@ def simple_algorithm():
                 temp_allcomb_list.remove(random_code2)
 
 
-kleur_div = int(input("Uit hoeveel kleuren kan er worden gekozen? Maximaal 10 invullen a.u.b"))
+kleur_div = int(input("Uit hoeveel kleuren kan er worden gekozen? Maximaal 10 invullen a.u.b "))
 kleur_aantal = int(input("Hoeveel kleuren moeten er geraden worden"))
 color_list = ["R", "B", "G", "Y", "O", "P", "Z", "W", "C", "M"]
 color_list = actual_color_list(color_list)
 hand_list = list_to_string(color_list)
 all_combinations = (combination_list([x for x in color_list], kleur_aantal))
 
-spelkeuze = int(input("Wil je zelf spelen(0), of wil je dat de computer het algoritme gebruikt?(1), toets 0 of 1 in"))
+spelkeuze = int(input("Wil je zelf spelen(0), of wil je dat de computer het algoritme gebruikt?(1), toets 0 of 1 in "))
 if spelkeuze == 1:
     random_code, attempts = simple_algorithm()
     print('The secret code:', random_code, 'has been found in ', attempts, 'attempts.')
