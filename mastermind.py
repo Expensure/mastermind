@@ -87,6 +87,7 @@ def guess_self(lst, guess_me, game, attempts):
 
 
 def simple_algorithm():
+    # Bron: https://canvas.hu.nl/courses/22629/files/1520303/download?wrap=1
     # Eerst een geheime code maken voor de computer om te raden
     guess_me = 'error'
     while guess_me not in all_combinations:  # For loop zorgt ervoor dat er altijd een werkende input uitkomt
