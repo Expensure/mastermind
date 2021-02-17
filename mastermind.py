@@ -31,7 +31,7 @@ def list_to_string(lst):
 
 
 def string_to_list(string):
-    # Maakt van een string een lijst zodat de lijst gebruikt kan worden samen met de combinatielijst
+    # Maakt van een string een lijst zodat de lijst vergeleken kan worden met de combinatielijst
     lst = []
     lst[:0] = string
     return lst
@@ -39,20 +39,19 @@ def string_to_list(string):
 
 def feedback(guess, guess_me):
     # Kijkt de resultaten van de gok van speler of computer na
-    positionCorrect = 0
-    colorCorrect = 0
-    codeList = []
-    codeList += guess_me
+    positionCorrect = 0  # Zwarte pins
+    colorCorrect = 0  # Witte pins
+    temp_guessme = guess_me
     for color in guess:
-        for p in codeList:
+        for p in guess_me:
             if color == p:
                 colorCorrect += 1
-                codeList.remove(p)
+                temp_guessme.remove(p)
                 break
-    for i in range(len(guess_me)):
-        if guess_me[i] == guess[i]:
-            positionCorrect += 1
-    colorCorrect -= positionCorrect
+            elif color in temp_guessme:
+                positionCorrect += 1
+                temp_guessme.remove(p)
+                break
     return positionCorrect, colorCorrect
 
 
@@ -96,25 +95,32 @@ def simple_algorithm():
         guess_me = string_to_list(guessnonlist)
         if guess_me not in all_combinations:  # Als input niet goed is, geeft aan gebruiker door dat het fout is
             print("Foute input, probeer iets zoals 'RGBY' in te vullen")
+    all_possibilities = all_combinations
 
-    # Simpel algoritme door twee willekeurige gokken steeds te vergelijken
-    temp_allcomb_list = all_combinations
-    tries = 0
-    while len(temp_allcomb_list) > 1:
-        tries += 1
-        random_code = random.choice(all_combinations)
-        check1 = (feedback(random_code, guess_me))
+    def compare_score(guess, guess_me, all_possibilities):
+        new_temp_list = []
+        guess_result = guess_resultblack, guess_resultwhite = feedback(guess, guess_me)
+        for i in all_possibilities:
+            others_result = feedback(i, guess_me)
+            if others_result != guess_result:
+                new_temp_list.append(i)
+        return new_temp_list
 
-        if check1 == (kleur_aantal, 0):
-            return random_code, tries
+    # Simpel algoritme door resultaat van de gok te vergelijken met alle andere mogelijkheden
+    def results(guess, tries, all_possibilities):
+        temp_allcomb_list = all_combinations
+        if guess == guess_me:
+            return guess, tries
+        else:
+            guess = random.choice(all_possibilities)
+            all_possibilities = compare_score(guess, guess_me, temp_allcomb_list)
+            tries += 1
+            print(guess)
+            print(all_possibilities)
+            return results(guess, tries, all_possibilities)
 
-        for i in range(len(temp_allcomb_list)):
-            random_code2 = random.choice(all_combinations)
-
-            check2 = (feedback(random_code, guess_me))
-
-            if check1 != check2:
-                temp_allcomb_list.remove(random_code2)
+    result = results('AAAA', 0, all_possibilities)
+    print(result)
 
 
 kleur_div = int(input("Uit hoeveel kleuren kan er worden gekozen? Maximaal 10 invullen a.u.b "))
