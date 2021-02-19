@@ -41,6 +41,7 @@ def feedback(guess, guess_me):
     # Kijkt de resultaten van de gok van speler of computer na
     positionCorrect = 0  # Zwarte pins
     colorCorrect = 0  # Witte pins
+    wrong = 0
     temp_guessme = guess_me
     for color in guess:
         for p in guess_me:
@@ -52,7 +53,10 @@ def feedback(guess, guess_me):
                 positionCorrect += 1
                 temp_guessme.remove(p)
                 break
-    return positionCorrect, colorCorrect
+            else:
+                wrong += 1
+                break
+    return [colorCorrect,positionCorrect, wrong]
 
 
 def guess_self(lst, guess_me, game, attempts):
@@ -102,18 +106,20 @@ def simple_algorithm():
         guess_result = guess_resultblack, guess_resultwhite = feedback(guess, guess_me)
         for i in all_possibilities:
             others_result = feedback(i, guess_me)
-            if others_result != guess_result:
+            print(i)
+            print(guess_result)
+            print(others_result)
+            if others_result == guess_result:
                 new_temp_list.append(i)
         return new_temp_list
 
     # Simpel algoritme door resultaat van de gok te vergelijken met alle andere mogelijkheden
     def results(guess, tries, all_possibilities):
-        temp_allcomb_list = all_combinations
         if guess == guess_me:
             return guess, tries
         else:
             guess = random.choice(all_possibilities)
-            all_possibilities = compare_score(guess, guess_me, temp_allcomb_list)
+            all_possibilities = compare_score(guess, guess_me, all_possibilities)
             tries += 1
             print(guess)
             print(all_possibilities)
