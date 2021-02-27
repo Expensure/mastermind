@@ -38,27 +38,30 @@ def string_to_list(string):
 
 
 def feedback(guess, guess_me):
+    """
+    :param guess: Current guess
+    :param guess_me: Secret code
+    :return: Result of comparing guess and guess_me with pins.
+    """
     blacks = 0
     whites = 0
-    used = [False, False, False, False]
-
-    # search only blacks and mark as "used" black elements
-    for i in range(4):
+    used = []
+    for i in range(kleur_div):
+        used.append(False)
+    # Finds blacks and marks their index as used
+    for i in range(kleur_div):
         if guess[i] == guess_me[i]:
             blacks += 1
             used[i] = True
 
-    # search only whites (but skip "used" elements)
-    # and mark as "used" every white element in code
-    # so it can't be used twice
-    for i in range(4):  # guess index
-        for j in range(4):  # code index
+    # Finds whites but skips the used indexes
+    for i in range(kleur_div):  # guess index
+        for j in range(kleur_div):  # code index
             if not used[j] and guess[j] == guess_me[i]:
                 whites += 1
                 used[j] = True
 
-    wrongs = len(guess_me) - (blacks + whites)
-    return blacks, whites, wrongs
+    return blacks, whites
 
 
 def guess_self(lst, guess_me, game, attempts):
