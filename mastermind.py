@@ -62,7 +62,8 @@ def feedback(guess, guess_me):
 
 
 def guess_self(lst, guess_me, game, attempts):
-    # Singleplayer game, creates a recursive algorithm that is finished when the random code has been guessed or the amount of turns has passed.
+    # Singleplayer game, creates a recursive algorithm that is finished when the random code has been guessed or the
+    # amount of turns has passed.
     if game:
         if attempts == 10:
             return 'YOU LOSE, code was', guess_me
@@ -71,8 +72,7 @@ def guess_self(lst, guess_me, game, attempts):
             guess = 'error'  # Om while-loop goed te laten verlopen
 
             while guess not in all_combinations:  # For loop zorgt ervoor dat er altijd een werkende input uitkomt
-                guessnonlist = input("geef " + str(kleur_aantal) + " letters aan elkaar, keuze uit " + hand_list)
-                guess = string_to_list(guessnonlist)
+                guess = string_to_list(input("geef " + str(kleur_aantal) + " letters aan elkaar, keuze uit " + hand_list))
                 if guess not in all_combinations:  # Als input niet goed is, geeft aan speler aan dat het fout is
                     print("Foute input, probeer iets zoals 'RGBY' in te vullen")
 
