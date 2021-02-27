@@ -62,6 +62,7 @@ def feedback(guess, guess_me):
 
 
 def guess_self(lst, guess_me, game, attempts):
+    # Singleplayer game, creates a recursive algorithm that is finished when the random code has been guessed or the amount of turns has passed.
     if game:
         if attempts == 10:
             return 'YOU LOSE, code was', guess_me
@@ -104,14 +105,18 @@ def simple_algorithm():
     all_possibilities = all_combinations
 
     def compare_score(guess, guess_me, all_possibilities):
+        """
+        :param guess: Current random guess
+        :param guess_me: Secret code
+        :param all_possibilities: All possible codes
+        :return: all_possibilities, but most codes have been removed because they are not the expected result.
+        """
         new_temp_list = []
+        print("Ik gokte:       ", guess)
         guess_result = feedback(guess, guess_me)
         for i in all_possibilities:
-            print (guess)
-            print(i)
             others_result = feedback(i, guess_me)
-            print(others_result)
-            if others_result == guess_result:
+            if others_result != guess_result:
                 new_temp_list.append(i)
         return new_temp_list
 
@@ -123,8 +128,6 @@ def simple_algorithm():
             guess = random.choice(all_possibilities)
             all_possibilities = compare_score(guess, guess_me, all_possibilities)
             tries += 1
-            print(guess)
-            print(all_possibilities)
             return results(guess, tries, all_possibilities)
 
     result = results('AAAA', 0, all_possibilities)
