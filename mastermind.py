@@ -139,47 +139,53 @@ def simple_algorithm():
     result = results('AAAA', 0, all_possibilities)
     return result
 
+def mini_feedback(code, code_guess):
+    position_correct = 0
+    color_correct = 0
+    code_list = []
+    code_list += code_guess
+    for color in code:
+        for p in code_list:
+            if color == p:
+                color_correct += 1
+                code_list.remove(p)
+                break
+    for i in range(len(code_guess)):
+        if code_guess[i] == code[i]:
+            position_correct += 1
+    color_correct -= position_correct
+    return position_correct, color_correct
+
+def mini_simple_algorithm(position_correct, color_correct, possible_code, game_turn, code_guess):
+    new_possible_code = []
+    new_possible_code += possible_code
+    feedback = (position_correct, color_correct)
+    if game_turn > 0:
+        new_possible_code.remove(code_guess)
+        for possibleCode in possible_code:
+            check = mini_feedback(code_guess, possibleCode)
+            if check != feedback:
+                if possibleCode in new_possible_code:
+                    new_possible_code.remove(possibleCode)
+    return new_possible_code
 
 def worst_case_algorithm(all_possibilities):
-    # Source: YET ANOTHER MASTERMIND STRATEGY by Barteld Kooi
-
-    def get_worst_dict():
-        worst_dict = {}
-        for i in all_possibilities:
-            worst_dict[f"{i}"] = []
-            for j in all_possibilities:
-                result = feedback(i, j, 4)  # Compares every possible code with all others
-                worst_dict[f"{i}"].append(result)  # Adds result of that comparison to that code in dict
-        return worst_dict
-
-    def get_all_highest(worstdict):
-        all_highest = []
-        for key in worstdict:  # For every code
-            unilist = []
-            countlist = []
-            q = worstdict[key]  # Check results
-            for i in q:  # Every result of the comparisons
-                if i not in unilist:  # If this result hasn't been spotted yet, add it
-                    unilist.append(i)
-            for i in unilist:
-                countlist.append(q.count(i))  # Add this result to the count, to see which comes
-            highest = max(countlist)
-            all_highest.append([key, unilist[countlist.index(highest)], highest])  # Adds the code, with which result is most frequent.
-        return all_highest
-
-    def results():
-        all_high = get_all_highest(get_worst_dict())
-        all_count = []
-
-        for i in all_high:
-            all_count.append(i[2])
-        lowest = min(all_count)
-        options = []
-        for i in all_high:
-            if i[2] <= lowest:
-                options.append(i)
-        return ast.literal_eval(options[0][0])
-    return results()
+    color_possible_feedback = []
+    for color in all_possibilities:
+        possible_feedback = [[[0, 0], 0], [[0, 1], 0], [[0, 2], 0], [[0, 3], 0], [[0, 4], 0], [[1, 0], 0], [[1, 1], 0],
+                            [[1, 2], 0], [[1, 3], 0], [[2, 0], 0], [[2, 1], 0], [[2, 2], 0], [[3, 0], 0],[[3, 1], 0] ,[[4, 0], 0]]
+        for code in all_possibilities:
+            check = mini_feedback(code, color)
+            check = [check[0], check[1]]
+            indexcounter = 0
+            for feedback in possible_feedback:
+                if check == feedback[0]:
+                    possible_feedback[indexcounter][1] += 1
+                indexcounter += 1
+        possible_feedback.sort(key=lambda feedback: feedback[1])
+        color_possible_feedback += [[color, possible_feedback[-1][1]]]
+    color_possible_feedback.sort(key=lambda feedback: feedback[1])
+    return color_possible_feedback[0][0]
 
 
 def own_algorithm():
@@ -187,62 +193,24 @@ def own_algorithm():
 
 
 def play(spelkeuze):
-    def comprised_simple(guess,  all_possibilities, feedbacks):
-        def feedback(guess, guess_me, kleur_aantal):
-            """
-            :param guess: Current guess
-            :param guess_me: Secret code
-            :return: Result of comparing guess and guess_me with pins.
-            """
-            blacks = 0
-            whites = 0
-            used = []
-            for i in range(kleur_aantal):
-                used.append(False)
-            # Finds blacks and marks their index as used
-            for i in range(kleur_aantal):
-                if guess[i] == guess_me[i]:
-                    blacks += 1
-                    used[i] = True
-
-            # Finds whites but skips the used indexes
-            for i in range(kleur_aantal):  # guess index
-                for j in range(kleur_aantal):  # code index
-                    if not used[j] and guess[j] == guess_me[i]:
-                        whites += 1
-                        used[j] = True
-            return blacks, whites
-
-        """
-        :param guess: Current random guess
-        :param all_possibilities: All possible codes
-        :return: all_possibilities, but most codes have been removed because they are not the expected result.
-        """
-        print(len(all_possibilities), " left before")
-        new_list = []
-        for i in all_possibilities:
-            print(feedback(guess, i, 4))
-            print(feedbacks)
-            if feedback(guess, i,4) == feedbacks:
-                new_list.append(i)
-        print(len(new_list), " left after")
-        return new_list
-
     kleur_aantal = 4
     color_list = ["R", "B", "G", "Y"]
+    guess = ['', '', '', '']
     all_combinations = (combination_list([x for x in color_list], kleur_aantal))
-    guess_me = ['R','R','R','R'] #make_guess_me(all_combinations)
-    n = 0
-    feedback= 0, 0
+    guess_me = make_guess_me(all_combinations)
+    position_correct, color_correct = feedback(guess,guess_me, 4)
+    turn = 1
+    while turn != 10:
+        if guess == guess_me:
+            return f"WIN within {turn} turns"
 
-    while True:
-        #print(n)
         if spelkeuze == 2:
-            if n!=0:
-                all_combinations = comprised_simple(guessyay, all_combinations, feedback)
-            else:
-                n+=1
-            guessyay = worst_case_algorithm(all_combinations)
+            guess = worst_case_algorithm(all_combinations)
+            all_combinations = mini_simple_algorithm(position_correct, color_correct, all_combinations, turn, guess)
+            print(guess)
+            print(turn)
+        turn += 1
+    return "L, turns are up"
 
 
 spelkeuze = int(input(
