@@ -138,14 +138,12 @@ def simple_algorithm():
 def worst_case_algorithm(all_possibilities):
     worst_dict = {}
     for i in all_possibilities:
-        worst_dict[{i}] = []
+        worst_dict[f"{i}"] = []
         for j in all_possibilities:
             result = feedback(i,j)
-            worst_dict[{i}].append(result)
+            worst_dict[f"{i}"].append(result)
     print(worst_dict)
     hoogste = []
-    for i in worst_dict: #
-        print(None)
     return None
 
 def own_algorithm():
