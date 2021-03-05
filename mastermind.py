@@ -156,7 +156,37 @@ def mini_feedback(code, code_guess):
     color_correct -= position_correct
     return position_correct, color_correct
 
+def mini_simple_algorithm(position_correct, color_correct, possible_code, game_turn, code_guess):
+    new_possible_code = []
+    new_possible_code += possible_code
+    feedback = (position_correct, color_correct)
+    if game_turn > 0:
+        new_possible_code.remove(code_guess)
+        for possibleCode in possible_code:
+            check = mini_feedback(code_guess, possibleCode)
+            if check != feedback:
+                if possibleCode in new_possible_code:
+                    new_possible_code.remove(possibleCode)
+    return new_possible_code
 
+def worst_case_algorithm(all_possibilities):
+    print(all_possibilities)
+    color_possible_feedback = []
+    for color in all_possibilities:
+        possible_feedback = [[[0, 0], 0], [[0, 1], 0], [[0, 2], 0], [[0, 3], 0], [[0, 4], 0], [[1, 0], 0], [[1, 1], 0],
+                            [[1, 2], 0], [[1, 3], 0], [[2, 0], 0], [[2, 1], 0], [[2, 2], 0], [[3, 0], 0],[[4, 0], 0]]
+        for code in all_possibilities:
+            check = mini_feedback(code, color)
+            check = [check[0], check[1]]
+            indexcounter = 0
+            for feedback in possible_feedback:
+                if check == feedback[0]:
+                    possible_feedback[indexcounter][1] += 1
+                indexcounter += 1
+        possible_feedback.sort(key=lambda feedback: feedback[1])
+        color_possible_feedback += [[color, possible_feedback[-1][1]]]
+    color_possible_feedback.sort(key=lambda feedback: feedback[1])
+    return color_possible_feedback[0][0]
 
 def jaspers_algorithm(position_correct, color_correct, all_possibilities, turn):
     new_pos = []
@@ -187,7 +217,9 @@ def play(spelkeuze):
         if guess == guess_me:
             return f"found code {guess_me} in {turn} turns"
         if spelkeuze == 2:
-            return("I give up")
+            all_combinations = mini_simple_algorithm(position_correct, color_correct, all_combinations, turn, guess)
+            guess = worst_case_algorithm(all_combinations)
+            print(guess)
         if spelkeuze == 3:
             guess = jaspers_algorithm(position_correct, color_correct, all_combinations, turn)
             print(guess)
