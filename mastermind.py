@@ -174,15 +174,15 @@ def mini_simple_algorithm(position_correct, color_correct, possible_code, game_t
                     new_possible_code.remove(possibleCode)
     return new_possible_code
 
-
 def worst_case_algorithm(all_possibilities):
+    print(all_possibilities)
     color_possible_feedback = []
     for color in all_possibilities:
         possible_feedback = [[[0, 0], 0], [[0, 1], 0], [[0, 2], 0], [[0, 3], 0], [[0, 4], 0], [[1, 0], 0], [[1, 1], 0],
-                             [[1, 2], 0], [[1, 3], 0], [[2, 0], 0], [[2, 1], 0], [[2, 2], 0], [[3, 0], 0],
-                             [[4, 0], 0]]  # all possible scores
+                            [[1, 2], 0], [[1, 3], 0], [[2, 0], 0], [[2, 1], 0], [[2, 2], 0], [[3, 0], 0],[[4, 0], 0]]
         for code in all_possibilities:
             check = mini_feedback(code, color)
+            check = [check[0], check[1]]
             indexcounter = 0
             for feedback in possible_feedback:
                 if check == feedback[0]:
@@ -194,20 +194,20 @@ def worst_case_algorithm(all_possibilities):
     return color_possible_feedback[0][0]
 
 
+
 def jaspers_algorithm(position_correct, color_correct, all_possibilities, turn):
     new_pos = []
     new_pos += all_possibilities
     first_choice = [['R', 'R', 'R', 'R'], ['B', 'B', 'B', 'B'], ['G', 'G', 'G', 'G'],
                     ['Y', 'Y', 'Y', 'Y']]
     color_correct += position_correct
-    if turn < 6:
+    if turn < 4:
         if color_correct > 0:
             for x in new_pos:
                 if first_choice[turn][0] not in x:
                     if x in new_pos:
                         new_pos.remove(x)
             return first_choice[turn]
-
     choice = random.choice(new_pos)
     return choice
 
