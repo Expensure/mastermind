@@ -1,7 +1,6 @@
 import random
 import ast
 
-
 def actual_color_list(colors):
     # Verkleint de totale lijst om een gelimiteerde hoeveelheid kleuren te gebruiken.
     lst = []
@@ -142,11 +141,7 @@ def simple_algorithm():
 
 
 def worst_case_algorithm(all_possibilities):
-    """
-    :param all_possibilities:
-    :return:
-    # Uses the worst case strategy from YET ANOTHER MASTERMIND STRATEGY by Barteld Kooi
-    """
+    # Source: YET ANOTHER MASTERMIND STRATEGY by Barteld Kooi
 
     def get_worst_dict():
         worst_dict = {}
@@ -172,20 +167,19 @@ def worst_case_algorithm(all_possibilities):
             all_highest.append([key, unilist[countlist.index(highest)], highest])  # Adds the code, with which result is most frequent.
         return all_highest
 
-    def results(all_highest):
+    def results():
+        all_high = get_all_highest(get_worst_dict())
         all_count = []
-        for i in all_highest:
+
+        for i in all_high:
             all_count.append(i[2])
         lowest = min(all_count)
         options = []
-        for i in all_highest:
+        for i in all_high:
             if i[2] <= lowest:
                 options.append(i)
         return ast.literal_eval(options[0][0])
-
-    print(results(get_all_highest(get_worst_dict())))
-
-    return None
+    return results()
 
 
 def own_algorithm():
@@ -193,38 +187,62 @@ def own_algorithm():
 
 
 def play(spelkeuze):
-    def comprised_simple(guess, guess_me, all_possibilities):
+    def comprised_simple(guess,  all_possibilities, feedbacks):
+        def feedback(guess, guess_me, kleur_aantal):
+            """
+            :param guess: Current guess
+            :param guess_me: Secret code
+            :return: Result of comparing guess and guess_me with pins.
+            """
+            blacks = 0
+            whites = 0
+            used = []
+            for i in range(kleur_aantal):
+                used.append(False)
+            # Finds blacks and marks their index as used
+            for i in range(kleur_aantal):
+                if guess[i] == guess_me[i]:
+                    blacks += 1
+                    used[i] = True
+
+            # Finds whites but skips the used indexes
+            for i in range(kleur_aantal):  # guess index
+                for j in range(kleur_aantal):  # code index
+                    if not used[j] and guess[j] == guess_me[i]:
+                        whites += 1
+                        used[j] = True
+            return blacks, whites
+
         """
         :param guess: Current random guess
-        :param guess_me: Secret code
         :param all_possibilities: All possible codes
         :return: all_possibilities, but most codes have been removed because they are not the expected result.
         """
-        new_temp_list = []
-        print("Ik gokte:       ", guess)
-        guess_result = feedback(guess, guess_me, kleur_aantal)
+        print(len(all_possibilities), " left before")
+        new_list = []
         for i in all_possibilities:
-            others_result = feedback(i, guess_me, kleur_aantal)
-            if others_result != guess_result:
-                new_temp_list.append(i)
-        return new_temp_list
+            print(feedback(guess, i, 4))
+            print(feedbacks)
+            if feedback(guess, i,4) == feedbacks:
+                new_list.append(i)
+        print(len(new_list), " left after")
+        return new_list
 
     kleur_aantal = 4
     color_list = ["R", "B", "G", "Y"]
     all_combinations = (combination_list([x for x in color_list], kleur_aantal))
     guess_me = ['R','R','R','R'] #make_guess_me(all_combinations)
     n = 0
+    feedback= 0, 0
 
     while True:
+        #print(n)
         if spelkeuze == 2:
-            guessyay = worst_case_algorithm(all_combinations)
-            print(guessyay)
             if n!=0:
-                print(guessyay)
-                all_combinations = comprised_simple(guessyay, guess_me, all_combinations)
+                all_combinations = comprised_simple(guessyay, all_combinations, feedback)
             else:
                 n+=1
-
+            guessyay = worst_case_algorithm(all_combinations)
 
 
 spelkeuze = int(input(
