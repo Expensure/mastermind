@@ -143,7 +143,7 @@ def worst_case_algorithm(all_possibilities):
             result = feedback(i,j)
             worst_dict[f"{i}"].append(result)
     print(worst_dict)
-    hoogste = []
+
     return None
 
 def own_algorithm():
