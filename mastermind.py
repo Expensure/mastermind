@@ -156,6 +156,25 @@ def mini_feedback(code, code_guess):
     color_correct -= position_correct
     return position_correct, color_correct
 
+
+
+def jaspers_algorithm(position_correct, color_correct, all_possibilities, turn):
+    new_pos = []
+    new_pos += all_possibilities
+    first6Choices = [['R', 'R', 'R', 'R'], ['B', 'B', 'B', 'B'], ['G', 'G', 'G', 'G'],
+                     ['Y', 'Y', 'Y', 'Y']]
+    color_correct += position_correct
+    if turn < 6:
+        if color_correct > 0:
+            for x in new_pos:
+                if first6Choices[turn][0] not in x:
+                    if x in new_pos:
+                        new_pos.remove(x)
+            return first6Choices[turn]
+
+    choice = random.choice(new_pos)
+    return choice
+
 def mini_simple_algorithm(position_correct, color_correct, possible_code, game_turn, code_guess):
     new_possible_code = []
     new_possible_code += possible_code
@@ -170,10 +189,11 @@ def mini_simple_algorithm(position_correct, color_correct, possible_code, game_t
     return new_possible_code
 
 def worst_case_algorithm(all_possibilities):
+    print(all_possibilities)
     color_possible_feedback = []
     for color in all_possibilities:
         possible_feedback = [[[0, 0], 0], [[0, 1], 0], [[0, 2], 0], [[0, 3], 0], [[0, 4], 0], [[1, 0], 0], [[1, 1], 0],
-                            [[1, 2], 0], [[1, 3], 0], [[2, 0], 0], [[2, 1], 0], [[2, 2], 0], [[3, 0], 0], [[3, 1], 0] ,[[4, 0], 0]]
+                            [[1, 2], 0], [[1, 3], 0], [[2, 0], 0], [[2, 1], 0], [[2, 2], 0], [[3, 0], 0],[[4, 0], 0]]
         for code in all_possibilities:
             check = mini_feedback(code, color)
             check = [check[0], check[1]]
@@ -199,7 +219,7 @@ def play(spelkeuze):
     all_combinations = (combination_list([x for x in color_list], kleur_aantal))
     guess_me = make_guess_me(all_combinations)
     position_correct, color_correct = feedback(guess,guess_me, 4)
-    turn = 0
+    turn = 1
     while turn != 10:
         if guess == guess_me:
             return "Win"
@@ -208,6 +228,9 @@ def play(spelkeuze):
             guess = worst_case_algorithm(all_combinations)
             print(guess)
         turn += 1
+        if spelkeuze == 3:
+            guess = jaspers_algorithm(position_correct, color_correct, all_combinations, turn)
+            print(guess)
     return "Fail"
 
 
