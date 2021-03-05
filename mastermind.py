@@ -170,22 +170,22 @@ def mini_simple_algorithm(position_correct, color_correct, possible_code, game_t
     return new_possible_code
 
 def worst_case_algorithm(all_possibilities):
-    colorPossibleFeedback = []
+    color_possible_feedback = []
     for color in all_possibilities:
-        possibleFeedback = [[[0, 0], 0], [[0, 1], 0], [[0, 2], 0], [[0, 3], 0], [[0, 4], 0], [[1, 0], 0], [[1, 1], 0],
+        possible_feedback = [[[0, 0], 0], [[0, 1], 0], [[0, 2], 0], [[0, 3], 0], [[0, 4], 0], [[1, 0], 0], [[1, 1], 0],
                             [[1, 2], 0], [[1, 3], 0], [[2, 0], 0], [[2, 1], 0], [[2, 2], 0], [[3, 0], 0], [[3, 1], 0] ,[[4, 0], 0]]
         for code in all_possibilities:
             check = mini_feedback(code, color)
             check = [check[0], check[1]]
             indexcounter = 0
-            for feedback in possibleFeedback:
+            for feedback in possible_feedback:
                 if check == feedback[0]:
-                    possibleFeedback[indexcounter][1] += 1
+                    possible_feedback[indexcounter][1] += 1
                 indexcounter += 1
-        possibleFeedback.sort(key=lambda feedback: feedback[1])
-        colorPossibleFeedback += [[color, possibleFeedback[-1][1]]]
-    colorPossibleFeedback.sort(key=lambda feedback: feedback[1])
-    return colorPossibleFeedback[0][0]
+        possible_feedback.sort(key=lambda feedback: feedback[1])
+        color_possible_feedback += [[color, possible_feedback[-1][1]]]
+    color_possible_feedback.sort(key=lambda feedback: feedback[1])
+    return color_possible_feedback[0][0]
 
 
 def own_algorithm():
@@ -200,11 +200,15 @@ def play(spelkeuze):
     guess_me = make_guess_me(all_combinations)
     position_correct, color_correct = feedback(guess,guess_me, 4)
     turn = 0
-    if spelkeuze == 2:
-        possibleCode = mini_simple_algorithm(position_correct, color_correct, all_combinations, turn, guess)
-        next_guess = worst_case_algorithm(possibleCode)
-        print(next_guess)
-    return None
+    while turn != 10:
+        if guess == guess_me:
+            return "Win"
+        if spelkeuze == 2:
+            all_combinations = mini_simple_algorithm(position_correct, color_correct, all_combinations, turn, guess)
+            guess = worst_case_algorithm(all_combinations)
+            print(guess)
+        turn += 1
+    return "Fail"
 
 
 
