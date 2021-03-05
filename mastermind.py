@@ -1,6 +1,7 @@
 import random
 import ast
 
+
 def actual_color_list(colors):
     # Verkleint de totale lijst om een gelimiteerde hoeveelheid kleuren te gebruiken.
     lst = []
@@ -98,13 +99,6 @@ def guess_self(lst, guess_me, game, attempts):
 def simple_algorithm():
     # Bron: https://canvas.hu.nl/courses/22629/files/1520303/download?wrap=1
     # Eerst een geheime code maken voor de computer om te raden
-    guess_me = 'error'
-    while guess_me not in all_combinations:  # For loop zorgt ervoor dat er altijd een werkende input uitkomt
-        guessnonlist = input("Maak een code voor de cpu om te raden, geef " + str(
-            kleur_aantal) + " letters aan elkaar, keuze uit " + hand_list)
-        guess_me = string_to_list(guessnonlist)
-        if guess_me not in all_combinations:  # Als input niet goed is, geeft aan gebruiker door dat het fout is
-            print("Foute input, probeer iets zoals 'RGBY' in te vullen")
     all_possibilities = all_combinations
 
     def compare_score(guess, guess_me, all_possibilities):
@@ -143,6 +137,7 @@ def worst_case_algorithm(all_possibilities):
     :return:
     # Uses the worst case strategy from YET ANOTHER MASTERMIND STRATEGY by Barteld Kooi
     """
+
     def get_worst_dict():
         worst_dict = {}
         for i in all_possibilities:
@@ -154,7 +149,7 @@ def worst_case_algorithm(all_possibilities):
 
     def get_all_highest(worstdict):
         all_highest = []
-        for key in worstdict:# For every code
+        for key in worstdict:  # For every code
             unilist = []
             countlist = []
             q = worstdict[key]  # Check results
@@ -164,9 +159,10 @@ def worst_case_algorithm(all_possibilities):
             for i in unilist:
                 countlist.append(q.count(i))  # Add this result to the count, to see which comes
             highest = max(countlist)
-            all_highest.append([key, unilist[countlist.index(highest)], highest]) # Adds the
+            all_highest.append([key, unilist[countlist.index(highest)], highest])  # Adds the
             print([key, unilist[countlist.index(highest)], highest])
         return all_highest
+
     def results(all_highest):
         all_count = []
         for i in all_highest:
@@ -187,6 +183,29 @@ def own_algorithm():
     return None
 
 
+def play(spelkeuze, all_combinations, color_list, kleur_aantal):
+    guess_me = 'error'
+    while guess_me not in all_combinations:  # For loop zorgt ervoor dat er altijd een werkende input uitkomt
+        guessnonlist = input("Maak een code voor de cpu om te raden, geef " + str(
+            kleur_aantal) + " letters aan elkaar, keuze uit " + hand_list)
+        guess_me = string_to_list(guessnonlist)
+        if guess_me not in all_combinations:  # Als input niet goed is, geeft aan gebruiker door dat het fout is
+            print("Foute input, probeer iets zoals 'RGBY' in te vullen")
+    n = 0
+    while True:
+        if spelkeuze == 2 and (len(color_list) != 4 or kleur_aantal != 4):
+            print('U kunt deze modus alleen doen als raadaantal = 4 en kleurkeuze = 4')
+            print('Daarom stellen we dit nu in.')
+            color_list = ["R", "B", "G", "Y"]
+            kleur_aantal = 4
+            all_combinations = (combination_list([x for x in color_list], kleur_aantal))
+        if spelkeuze == 2:
+            worst_case_algorithm(all_combinations)
+        if spelkeuze == 1:
+            random_code, attempts = simple_algorithm()
+            print('The secret code:', random_code, 'has been found in ', attempts, 'attempts.')
+
+
 kleur_div = int(input("Uit hoeveel kleuren kan er worden gekozen? Maximaal 10 invullen a.u.b "))
 kleur_aantal = int(input("Hoeveel kleuren moeten er geraden worden"))
 color_list = ["R", "B", "G", "Y", "O", "P", "Z", "W", "C", "M"]
@@ -197,17 +216,8 @@ all_combinations = (combination_list([x for x in color_list], kleur_aantal))
 
 spelkeuze = int(input(
     "Wil je zelf spelen(0), simpelalgoritme(1), worstcase(2) of jasper's algoritme gebruiken? toets 0,1,2 of 3 in "))
-while True:
-    if spelkeuze == 2 and (len(color_list) != 4 or kleur_aantal != 4):
-        print('U kunt deze modus alleen doen als raadaantal = 4 en kleurkeuze = 4')
-        print('Daarom stellen we dit nu in.')
-        color_list = ["R", "B", "G", "Y"]
-        kleur_aantal = 4
-        all_combinations = (combination_list([x for x in color_list], kleur_aantal))
-    if spelkeuze == 2:
-        worst_case_algorithm(all_combinations)
-    if spelkeuze == 1:
-        random_code, attempts = simple_algorithm()
-        print('The secret code:', random_code, 'has been found in ', attempts, 'attempts.')
-    elif spelkeuze == 0:
-        guess_self(all_combinations, None, False, 0)
+
+if spelkeuze == 0:
+    guess_self(all_combinations, None, False, 0)
+elif spelkeuze < 4:
+    play(spelkeuze, all_combinations, color_list, kleur_aantal)
