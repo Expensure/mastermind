@@ -136,15 +136,15 @@ def simple_algorithm():
     return result
 
 def worst_case_algorithm(all_possibilities):
-    worst_lst = []
+    worst_dict = {}
     for i in all_possibilities:
-        worst_lst[i] = []
+        worst_dict[{i}] = []
         for j in all_possibilities:
             result = feedback(i,j)
-            worst_lst[i].append(result)
-    print(worst_lst)
+            worst_dict[{i}].append(result)
+    print(worst_dict)
     hoogste = []
-    for i in worst_lst: #
+    for i in worst_dict: #
         print(None)
     return None
 
