@@ -60,7 +60,6 @@ def feedback(guess, guess_me):
             if not used[j] and guess[j] == guess_me[i]:
                 whites += 1
                 used[j] = True
-
     return blacks, whites
 
 
@@ -79,7 +78,7 @@ def guess_self(lst, guess_me, game, attempts):
                 if guess not in all_combinations:  # Als input niet goed is, geeft aan speler aan dat het fout is
                     print("Foute input, probeer iets zoals 'RGBY' in te vullen")
 
-            correct, existing, wrong = feedback(guess, guess_me)  # Laat de gok testen
+            correct, existing = feedback(guess, guess_me)  # Laat de gok testen
             print("Je hebt ", correct, " correct, en verder heb je", existing, "kleuren")
 
             if correct == len(guess_me):  # Winning condition
@@ -136,15 +135,31 @@ def simple_algorithm():
     result = results('AAAA', 0, all_possibilities)
     return result
 
+def worst_case_algorithm():
+    all_possibilities = all_combinations
+    return None
+
+def own_algorithm():
+    return None
+
 
 kleur_div = int(input("Uit hoeveel kleuren kan er worden gekozen? Maximaal 10 invullen a.u.b "))
 kleur_aantal = int(input("Hoeveel kleuren moeten er geraden worden"))
 color_list = ["R", "B", "G", "Y", "O", "P", "Z", "W", "C", "M"]
 color_list = actual_color_list(color_list)
+print(color_list)
 hand_list = list_to_string(color_list)
 all_combinations = (combination_list([x for x in color_list], kleur_aantal))
 
-spelkeuze = int(input("Wil je zelf spelen(0), of wil je dat de computer het algoritme gebruikt?(1), toets 0 of 1 in "))
+spelkeuze = int(input("Wil je zelf spelen(0), simpelalgoritme(1), worstcase(2) of jasper's algoritme gebruiken? toets 0,1,2 of 3 in "))
+if spelkeuze == 2 and (len(color_list) != 4 or kleur_aantal != 4):
+    print('U kunt deze modus alleen doen als raadaantal = 4 en kleurkeuze = 4')
+    print('Daarom stellen we dit nu in.')
+    color_list = ["R", "B", "G", "Y"]
+    kleur_aantal = 4
+    all_combinations = (combination_list([x for x in color_list], kleur_aantal))
+if spelkeuze == 2:
+    worst_case_algorithm()
 if spelkeuze == 1:
     random_code, attempts = simple_algorithm()
     print('The secret code:', random_code, 'has been found in ', attempts, 'attempts.')
