@@ -1,6 +1,7 @@
 import random
 import ast
 
+
 def actual_color_list(colors):
     # Verkleint de totale lijst om een gelimiteerde hoeveelheid kleuren te gebruiken.
     lst = []
@@ -94,6 +95,7 @@ def guess_self(lst, guess_me, game, attempts):
         game = True
     return guess_self(lst, guess_me, game, attempts)
 
+
 def make_guess_me(all_combinations):
     guess_me = 'error'
     while guess_me not in all_combinations:  # For loop zorgt ervoor dat er altijd een werkende input uitkomt
@@ -103,6 +105,7 @@ def make_guess_me(all_combinations):
         if guess_me not in all_combinations:  # Als input niet goed is, geeft aan gebruiker door dat het fout is
             print("Foute input, probeer iets zoals 'RGBY' in te vullen")
     return guess_me
+
 
 def simple_algorithm():
     # Bron: https://canvas.hu.nl/courses/22629/files/1520303/download?wrap=1
@@ -139,6 +142,7 @@ def simple_algorithm():
     result = results('AAAA', 0, all_possibilities)
     return result
 
+
 def mini_feedback(code, code_guess):
     position_correct = 0
     color_correct = 0
@@ -156,6 +160,7 @@ def mini_feedback(code, code_guess):
     color_correct -= position_correct
     return position_correct, color_correct
 
+
 def mini_simple_algorithm(position_correct, color_correct, possible_code, game_turn, code_guess):
     new_possible_code = []
     new_possible_code += possible_code
@@ -169,15 +174,15 @@ def mini_simple_algorithm(position_correct, color_correct, possible_code, game_t
                     new_possible_code.remove(possibleCode)
     return new_possible_code
 
+
 def worst_case_algorithm(all_possibilities):
-    print(all_possibilities)
     color_possible_feedback = []
     for color in all_possibilities:
         possible_feedback = [[[0, 0], 0], [[0, 1], 0], [[0, 2], 0], [[0, 3], 0], [[0, 4], 0], [[1, 0], 0], [[1, 1], 0],
-                            [[1, 2], 0], [[1, 3], 0], [[2, 0], 0], [[2, 1], 0], [[2, 2], 0], [[3, 0], 0],[[4, 0], 0]]
+                             [[1, 2], 0], [[1, 3], 0], [[2, 0], 0], [[2, 1], 0], [[2, 2], 0], [[3, 0], 0],
+                             [[4, 0], 0]]  # all possible scores
         for code in all_possibilities:
             check = mini_feedback(code, color)
-            check = [check[0], check[1]]
             indexcounter = 0
             for feedback in possible_feedback:
                 if check == feedback[0]:
@@ -188,11 +193,12 @@ def worst_case_algorithm(all_possibilities):
     color_possible_feedback.sort(key=lambda feedback: feedback[1])
     return color_possible_feedback[0][0]
 
+
 def jaspers_algorithm(position_correct, color_correct, all_possibilities, turn):
     new_pos = []
     new_pos += all_possibilities
     first_choice = [['R', 'R', 'R', 'R'], ['B', 'B', 'B', 'B'], ['G', 'G', 'G', 'G'],
-                     ['Y', 'Y', 'Y', 'Y']]
+                    ['Y', 'Y', 'Y', 'Y']]
     color_correct += position_correct
     if turn < 6:
         if color_correct > 0:
@@ -205,15 +211,16 @@ def jaspers_algorithm(position_correct, color_correct, all_possibilities, turn):
     choice = random.choice(new_pos)
     return choice
 
+
 def play(spelkeuze):
     kleur_aantal = 4
     color_list = ["R", "B", "G", "Y"]
     guess = ['', '', '', '']
     all_combinations = (combination_list([x for x in color_list], kleur_aantal))
     guess_me = make_guess_me(all_combinations)
-    position_correct, color_correct = feedback(guess,guess_me, 4)
-    turn = 1
-    while turn:
+    position_correct, color_correct = feedback(guess, guess_me, 4)
+    turn = 0
+    while True:
         if guess == guess_me:
             return f"found code {guess_me} in {turn} turns"
         if spelkeuze == 2:
@@ -224,7 +231,6 @@ def play(spelkeuze):
             guess = jaspers_algorithm(position_correct, color_correct, all_combinations, turn)
             print(guess)
         turn += 1
-
 
 
 spelkeuze = int(input(
@@ -244,5 +250,3 @@ else:
     elif spelkeuze == 1:
         random_code, attempts = simple_algorithm()
         print('The secret code:', random_code, 'has been found in ', attempts, 'attempts.')
-
-
