@@ -135,8 +135,17 @@ def simple_algorithm():
     result = results('AAAA', 0, all_possibilities)
     return result
 
-def worst_case_algorithm():
-    all_possibilities = all_combinations
+def worst_case_algorithm(all_possibilities):
+    worst_lst = []
+    for i in all_possibilities:
+        worst_lst[i] = []
+        for j in all_possibilities:
+            result = feedback(i,j)
+            worst_lst[i].append(result)
+    print(worst_lst)
+    hoogste = []
+    for i in worst_lst: #
+        print(None)
     return None
 
 def own_algorithm():
@@ -159,7 +168,7 @@ if spelkeuze == 2 and (len(color_list) != 4 or kleur_aantal != 4):
     kleur_aantal = 4
     all_combinations = (combination_list([x for x in color_list], kleur_aantal))
 if spelkeuze == 2:
-    worst_case_algorithm()
+    worst_case_algorithm(all_combinations)
 if spelkeuze == 1:
     random_code, attempts = simple_algorithm()
     print('The secret code:', random_code, 'has been found in ', attempts, 'attempts.')
