@@ -1,6 +1,4 @@
 import random
-import ast
-
 
 def actual_color_list(colors):
     # Verkleint de totale lijst om een gelimiteerde hoeveelheid kleuren te gebruiken.
@@ -143,100 +141,25 @@ def simple_algorithm():
     return result
 
 
-def mini_feedback(code, code_guess):
-    position_correct = 0
-    color_correct = 0
-    code_list = []
-    code_list += code_guess
-    for color in code:
-        for p in code_list:
-            if color == p:
-                color_correct += 1
-                code_list.remove(p)
-                break
-    for i in range(len(code_guess)):
-        if code_guess[i] == code[i]:
-            position_correct += 1
-    color_correct -= position_correct
-    return position_correct, color_correct
-
-
-def mini_simple_algorithm(position_correct, color_correct, possible_code, game_turn, code_guess):
-    new_possible_code = []
-    new_possible_code += possible_code
-    feedback = (position_correct, color_correct)
-    if game_turn > 0:
-        new_possible_code.remove(code_guess)
-        for possibleCode in possible_code:
-            check = mini_feedback(code_guess, possibleCode)
-            if check != feedback:
-                if possibleCode in new_possible_code:
-                    new_possible_code.remove(possibleCode)
-    return new_possible_code
-
-def worst_case_algorithm(all_possibilities):
-    print(all_possibilities)
-    color_possible_feedback = []
-    for color in all_possibilities:
-        possible_feedback = [[[0, 0], 0], [[0, 1], 0], [[0, 2], 0], [[0, 3], 0], [[0, 4], 0], [[1, 0], 0], [[1, 1], 0],
-                            [[1, 2], 0], [[1, 3], 0], [[2, 0], 0], [[2, 1], 0], [[2, 2], 0], [[3, 0], 0],[[4, 0], 0]]
-        for code in all_possibilities:
-            check = mini_feedback(code, color)
-            check = [check[0], check[1]]
-            indexcounter = 0
-            for feedback in possible_feedback:
-                if check == feedback[0]:
-                    possible_feedback[indexcounter][1] += 1
-                indexcounter += 1
-        possible_feedback.sort(key=lambda feedback: feedback[1])
-        color_possible_feedback += [[color, possible_feedback[-1][1]]]
-    color_possible_feedback.sort(key=lambda feedback: feedback[1])
-    return color_possible_feedback[0][0]
-
-
-
-def jaspers_algorithm(position_correct, color_correct, all_possibilities, turn):
-    new_pos = []
-    new_pos += all_possibilities
-    first_choice = [['R', 'R', 'R', 'R'], ['B', 'B', 'B', 'B'], ['G', 'G', 'G', 'G'],
-                    ['Y', 'Y', 'Y', 'Y']]
-    color_correct += position_correct
-    if turn < 4:
-        if color_correct > 0:
-            for x in new_pos:
-                if first_choice[turn][0] not in x:
-                    if x in new_pos:
-                        new_pos.remove(x)
-            return first_choice[turn]
-    choice = random.choice(new_pos)
-    return choice
-
-
-def play(spelkeuze):
-    kleur_aantal = 4
-    color_list = ["R", "B", "G", "Y"]
-    guess = ['', '', '', '']
-    all_combinations = (combination_list([x for x in color_list], kleur_aantal))
-    guess_me = make_guess_me(all_combinations)
-    position_correct, color_correct = feedback(guess, guess_me, 4)
-    turn = 0
+def worstcase_algorithm():
+    color_count = 4
+    color_listy = ["R", "B", "G", "Y", "O", "P"]
+    guess = ['R', 'R', 'B', 'B']
+    S = (combination_list([x for x in color_listy], color_count))
+    S_minor = S
+    guess_me = make_guess_me(S)
     while True:
-        if guess == guess_me:
-            return f"found code {guess_me} in {turn} turns"
-        if spelkeuze == 2:
-            all_combinations = mini_simple_algorithm(position_correct, color_correct, all_combinations, turn, guess)
-            guess = worst_case_algorithm(all_combinations)
-            print(guess)
-        if spelkeuze == 3:
-            guess = jaspers_algorithm(position_correct, color_correct, all_combinations, turn)
-            print(guess)
-        turn += 1
+
+        result = feedback(guess, guess_me, 4)
+        if result == (4,0):
+            return "what"
+
 
 
 spelkeuze = int(input(
     "Wil je zelf spelen(0), simpelalgoritme(1), worstcase(2) of jasper's algoritme gebruiken? toets 0,1,2 of 3 in "))
-if spelkeuze == 2 or spelkeuze == 3:
-    print(play(spelkeuze))
+if spelkeuze == 2:
+    print(worstcase_algorithm())
 else:
     kleur_div = int(input("Uit hoeveel kleuren kan er worden gekozen? Maximaal 10 invullen a.u.b "))
     kleur_aantal = int(input("Hoeveel kleuren moeten er geraden worden"))
