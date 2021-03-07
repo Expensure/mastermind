@@ -143,7 +143,7 @@ def simple_algorithm():
 
 
 def narrow_down(result, guess_me, S):
-    # Removes all from S that have
+    # Removes all from S that have same score as guess
     wrong_lst = []
     for i in S:
         result_of_poss = feedback(i, guess_me, 4)
