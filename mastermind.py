@@ -153,6 +153,7 @@ def narrow_down(result, guess_me, S):
 
 
 def make_guess(S):
+    # Makes a guess based on the worstcase algorithm
     T_minor = []
     for i in S:
         T = [[[0, 0], 0], [[0, 1], 0], [[0, 2], 0], [[0, 3], 0], [[0, 4], 0], [[1, 0], 0], [[1, 1], 0],[[1, 2], 0], [[1, 3], 0], [[2, 0], 0], [[2, 1], 0], [[2, 2], 0], [[3, 0], 0], [[4, 0], 0]]
@@ -175,7 +176,6 @@ def play_worstcase_algorithm():
     guess = ['R', 'R', 'B', 'B']
     S = (combination_list([x for x in color_listy], color_count))
     # print(len(S))
-    S_minor = S
     guess_me = make_guess_me(S)
     attempt = 1
     while True:
