@@ -43,8 +43,11 @@ def feedback(guess, guess_me, kleur_aantal):
     :param guess_me: Secret code
     :return: Result of comparing guess and guess_me with pins.
     """
-    temp_guess = [False, False, False, False]
-    temp_guess_me = [False, False, False, False]
+    temp_guess = []
+    temp_guess_me = []
+    for i in range(kleur_aantal):
+        temp_guess.append(False)
+        temp_guess_me.append(False)
     blacks = 0
     whites = 0
     # Finds blacks and marks their index as used
@@ -172,7 +175,7 @@ def make_guess(S):
 
 def play_worstcase_algorithm():
     color_count = 4
-    color_listy = ["R", "B", "G", "Y"]
+    color_listy = ["R", "B", "G", "Y", "O", "P"]
     guess = ['R', 'R', 'B', 'B']
     S = (combination_list([x for x in color_listy], color_count))
     # print(len(S))
@@ -186,6 +189,7 @@ def play_worstcase_algorithm():
         S = narrow_down(result, guess_me, S)
         guess = make_guess(S)
         attempt+=1
+        print(S)
 
 # print(feedback(["R","R","R","R"], ["R","R","B","B"],4)) # Hoort (2,0) te geven
 spelkeuze = int(input(
