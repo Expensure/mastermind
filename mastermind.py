@@ -189,7 +189,7 @@ def play_worstcase_algorithm():
 
 # print(feedback(["R","R","R","R"], ["R","R","B","B"],4)) # Hoort (2,0) te geven
 spelkeuze = int(input(
-    "Wil je zelf spelen(0), simpelalgoritme(1), worstcase(2) of jasper's algoritme gebruiken? toets 0,1,2 of 3 in "))
+    "Wil je zelf spelen(0), simpelalgoritme(1) of  worstcase(2)  gebruiken? toets 0,1 of 2 in "))
 if spelkeuze == 2:
     print(play_worstcase_algorithm())
 else:
