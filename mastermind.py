@@ -1,5 +1,6 @@
 import random
 
+
 def actual_color_list(colors):
     # Verkleint de totale lijst om een gelimiteerde hoeveelheid kleuren te gebruiken.
     lst = []
@@ -42,23 +43,23 @@ def feedback(guess, guess_me, kleur_aantal):
     :param guess_me: Secret code
     :return: Result of comparing guess and guess_me with pins.
     """
+    temp_guess = [False, False, False, False]
+    temp_guess_me = [False, False, False, False]
     blacks = 0
     whites = 0
-    used = []
-    for i in range(kleur_aantal):
-        used.append(False)
     # Finds blacks and marks their index as used
     for i in range(kleur_aantal):
         if guess[i] == guess_me[i]:
             blacks += 1
-            used[i] = True
-
+            temp_guess[i] = True
+            temp_guess_me[i] = True
     # Finds whites but skips the used indexes
     for i in range(kleur_aantal):  # guess index
         for j in range(kleur_aantal):  # code index
-            if not used[j] and guess[j] == guess_me[i]:
+            if guess[j] == guess_me[i] and temp_guess_me[i] == False:
                 whites += 1
-                used[j] = True
+                temp_guess[j] = True
+                temp_guess_me[i] = True
     return blacks, whites
 
 
@@ -141,25 +142,56 @@ def simple_algorithm():
     return result
 
 
-def worstcase_algorithm():
+def narrow_down(result, guess_me, S):
+    # Removes all from S that have
+    wrong_lst = []
+    for i in S:
+        result_of_poss = feedback(i, guess_me, 4)
+        if result_of_poss != result:
+            wrong_lst.append(i)
+    return wrong_lst
+
+
+def make_guess(S):
+    T_minor = []
+    for i in S:
+        T = [[[0, 0], 0], [[0, 1], 0], [[0, 2], 0], [[0, 3], 0], [[0, 4], 0], [[1, 0], 0], [[1, 1], 0],[[1, 2], 0], [[1, 3], 0], [[2, 0], 0], [[2, 1], 0], [[2, 2], 0], [[3, 0], 0], [[4, 0], 0]]
+        for j in S:
+            results = feedback(i,j,4)
+            indexcounter = 0
+            for result in T:
+                if results == result[0]:
+                    T[indexcounter][1] += 1
+                indexcounter += 1
+        T.sort(key=lambda result: result[1])
+        T_minor += [[i, T[-1][1]]]
+    T_minor.sort(key=lambda result: result[1])
+    return T_minor[0][0]
+
+
+def play_worstcase_algorithm():
     color_count = 4
-    color_listy = ["R", "B", "G", "Y", "O", "P"]
+    color_listy = ["R", "B", "G", "Y"]
     guess = ['R', 'R', 'B', 'B']
     S = (combination_list([x for x in color_listy], color_count))
+    # print(len(S))
     S_minor = S
     guess_me = make_guess_me(S)
+    attempt = 1
     while True:
-
+        print("I guessed", guess)
         result = feedback(guess, guess_me, 4)
-        if result == (4,0):
-            return "what"
+        if result == (4, 0):
+            return f"Code was guessed in {attempt} attempts"
+        S = narrow_down(result, guess_me, S)
+        guess = make_guess(S)
+        attempt+=1
 
-
-
+# print(feedback(["R","R","R","R"], ["R","R","B","B"],4)) # Hoort (2,0) te geven
 spelkeuze = int(input(
     "Wil je zelf spelen(0), simpelalgoritme(1), worstcase(2) of jasper's algoritme gebruiken? toets 0,1,2 of 3 in "))
 if spelkeuze == 2:
-    print(worstcase_algorithm())
+    print(play_worstcase_algorithm())
 else:
     kleur_div = int(input("Uit hoeveel kleuren kan er worden gekozen? Maximaal 10 invullen a.u.b "))
     kleur_aantal = int(input("Hoeveel kleuren moeten er geraden worden"))
