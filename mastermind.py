@@ -37,6 +37,7 @@ def string_to_list(string):
     return lst
 
 
+
 def feedback(guess, guess_me, kleur_aantal):
     """
     :param guess: Current guess
